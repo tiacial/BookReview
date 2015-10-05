@@ -1,0 +1,48 @@
+%div.row
+  %div.col-md-4
+    = image_tag @book.book_img.url(:book_show), :class => "book-show"
+  %div.col-md-8
+    %div.book-info
+      %h2.book-title
+        = @book.title
+      %h3.book-author
+        %span From
+        = @book.author
+      %h2.avg-rating Average Rating
+      %div.average-review-rating{"data-score" => @average_review}
+      %span.number-of-reviews Base on #{@book.reviews.count} reviews
+      %p.book-desc
+        = @book.description
+
+%div.row
+  %div.col-md-4
+    %div.reviews
+      %h1 Reviews
+      = render @book.reviews
+      %div
+        = link_to "Add Review", new_book_review_path(@book), :class => "btn btn-custom"
+%p
+%div.links.btn-group
+  = link_to "Back", root_path, :class => "btn btn-custom"
+
+  - if user_signed_in?
+    - if @book.user_id == current_user.id
+      = link_to "Edit", edit_book_path(@book), :class => "btn btn-custom"
+      = link_to "Delete", book_path(@book), method: :delete, data: {confirm: "Are you sure?"}, :class => "btn btn-custom"
+%p
+:javascript
+  $('.review-rating').raty({
+    readOnly: true,
+    score: function() {
+      return $(this).attr('data-score')
+    },
+    path: '/assets/'
+  });
+
+  $('.average-review-rating').raty({
+    readOnly: true,
+    path: '/assets/',
+    score: function() {
+      return $(this).attr('data-score')
+    }
+  });
