@@ -1,0 +1,36 @@
+!!!
+%html
+  %head
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+    %title BookReview
+  %body
+    %nav.navbar.navbar-default
+      .container
+        .navbar-header
+          = link_to "Book Review", root_path, class: "navbar-brand"
+        %ul.nav.navbar-nav
+          %li= link_to "Sign Up", new_user_registration_path
+          - if user_signed_in?
+            %li= link_to "Sign Out", destroy_user_session_path, method: :delete
+          - else
+            %li= link_to "Sign In", new_user_session_path
+        %ul.nav.navbar-nav.navbar-right
+          %li.dropdown
+            %a.dropdown-toggle{:href => "#", :data => {:toggle => "dropdown", :role => "button", "aria-expanded" => "false"}} Categories
+            %ul.dropdown-menu{:role => "menu"}
+              - Category.all.each do |category|
+                - if params[:category].eql?(category.name)
+                  %li.active= link_to category.name, books_path(:category => category.name), :class => "link"
+                - else
+                  %li= link_to category.name, books_path(:category => category.name), :class => "link"
+          - if user_signed_in?
+            %li= link_to "Add Book", new_book_path
+
+    .container
+      %p.notice= notice
+      %p.alert= alert
+      = yield
+      
+  = render "layouts/footer"
